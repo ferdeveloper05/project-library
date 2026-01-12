@@ -16,6 +16,7 @@ class CreateBook(BaseModel):
     author: str = Field(title='Enter the author', min_length=5, max_length=15)
     category: List[CategoryBook]
     year: int = Field(gt=1700, lt=2026)
+    reading: bool = False
     
     model_config = {
         'json_schema_extra':{
@@ -24,6 +25,7 @@ class CreateBook(BaseModel):
             'category': [
                 'aventura'
             ],
-            'year':2001
+            'year':2001, 
+            'reading': True
         }
     }
