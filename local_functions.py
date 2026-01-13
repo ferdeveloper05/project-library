@@ -1,22 +1,63 @@
 import json
+import aiofiles # Instalar esta libreria 
+import os
 
 json_file = 'list_books.json'
 
 def save_book(book):
-    list_books =[]
-    with open(json_file, 'a', encoding='utf-8') as f:
-        list_books.append(book)
-        json.dump(list_books, f, indent=4, ensure_ascii=False, separators=(',',':'))
+    
+    with open(json_file, 'r', encoding='utf-8') as f: 
+        datos = json.load(f)
         
+        if isinstance(datos, list): 
+            datos.append(book)
+        else:
+            datos = [datos] + book
+    
+    with open(json_file, 'w', encoding='utf-8') as file: 
+        json.dump(datos, file, indent=4, ensure_ascii=False)
+
 def read_book() -> list:
     with open(json_file, 'r', encoding='utf-8') as f:
-        return json.load(f)
+        datos = json.load(f)
+        if isinstance(datos, list):
+            return datos
     
-def delete_book(book: dict):
+def delete_book(book: str):
     with open(json_file, 'r', encoding='utf-8') as f:
-        archivos = list(json.load(f))
+        archivos = json.load(f)
         
-        for dato in archivos:
-            if dato['id'] == book['id']:
-                archivos
+    if not isinstance(archivos, list):
+        raise ValueError('El archivo debe contener una lista')
         
+    if not any(str(item.get('id')) == book for item in archivos):
+        print(f'ID {book} no encontrado')
+        return None
+        
+    datos_filtrados = [item for item in archivos if str(item.get('id')) != book]
+    
+    with open(json_file, 'w', encoding='utf-8') as f: 
+        json.dump(datos_filtrados, f, indent=4)
+    return book    
+
+
+async def delete_book_new(book: str):
+    if not os.path.exists(json_file):
+        return None
+    
+    async with aiofiles.open(json_file, 'r', encoding='utf-8') as f:
+        content = await f.read()
+        archivos = json.loads(content) if content.strip() else []
+    
+    if not isinstance(archivos, list):
+        raise ValueError('El archivo debe contener una lista')
+        
+    if not any(str(item.get('id')) == book for item in archivos):
+        print(f'ID {book} no encontrado')
+        return None
+        
+    datos_filtrados = [item for item in archivos if str(item.get('id')) != book]
+    
+    async with aiofiles.open(json_file, 'w', encoding='utf-8') as f:
+        await f.write(json.dumps(datos_filtrados, indent=4))
+    return book

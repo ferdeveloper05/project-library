@@ -1,12 +1,24 @@
 [
     {
-        "id":"142f9ec4-113a-4a95-a929-0b784e3f9a31",
-        "title":"Amanecer en la cosecha",
-        "author":"Suzanne Colins",
-        "category":[
+        "id": "0f1f9d71-1ef3-4b9d-b9db-cdb930868171",
+        "title": "Los juegos del hambre",
+        "author": "Suzanne Colins",
+        "category": [
             "distopia"
         ],
-        "year":2025,
-        "reading":false
+        "year": 2008,
+        "reading": true,
+        "score": 4
+    },
+    {
+        "id": "e9b0c466-1e07-49a1-9959-5e4fc28a45b7",
+        "title": "En llamas",
+        "author": "Suzanne Colins",
+        "category": [
+            "distopia"
+        ],
+        "year": 2010,
+        "reading": true,
+        "score": 5
     }
 ]

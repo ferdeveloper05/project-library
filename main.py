@@ -1,8 +1,8 @@
-from fastapi import FastAPI, Query, Path
+from fastapi import FastAPI, Query, Path, HTTPException
 from typing import Annotated
 from models import CreateBook
 from uuid import UUID, uuid4
-from local_functions import save_book, read_book, delete_book
+from local_functions import read_book, delete_book, save_book, delete_book_new
 
 app = FastAPI(
     version='1.0.0',
@@ -20,24 +20,20 @@ async def say_hello():
 async def create_book(book: Annotated[CreateBook, Query()]):
     book.id = str(uuid4())
     save_book(book.model_dump(mode='json'))
-    #save_book(books)
-    
-    read = read_book()
-    return read
+    return read_book()
 
 
 @app.get('/list_books', tags=['Library'])
 async def list_books() -> list:
-    read = read_book()
-    return read
+    return read_book()
 
 @app.get('/view-book/{book_id}/', response_model=CreateBook, tags=['Library'])
-async def view_book(book_id: Annotated[UUID, Path(title='The ID of Book')]) -> dict:
-    for book in books: 
-        if book.id == book_id:
+async def view_book(book_id: UUID) -> dict:
+    list_books = read_book()
+    for book in list_books: 
+        if book['id'] == str(book_id):
             return book
-    else:
-        return {}
+
     
 @app.put('/update-book/{book_id}/', tags=['Library'])
 async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[CreateBook, Query()]):
@@ -50,8 +46,19 @@ async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[C
 
 @app.delete('/delete-book/{book_id}/', tags=['Library'])
 async def delete_book(book_id: Annotated[UUID, Path(title='The ID of book')]):
-    for book in read_book():
-        if book['id'] == book_id:
-            delete_book(book)
-    print(read_book())
-    #return read_book()
+    book_id_str = str(book_id)
+    
+    list_books = read_book()
+    book_exists = any(str(book.get('id')) == book_id_str for book in list_books)
+    
+    if not book_exists:
+        raise HTTPException(status_code=404, detail=f'Book with ID {book_id} not found')
+    
+    deleted_id = await delete_book_new(book_id_str)
+    
+    if deleted_id:
+        return {
+            'message':f'Book with ID {book_id} deleted successfully'
+        }
+    else:
+        raise HTTPException(status_code=500, detail='Failed to delete book')
