@@ -2,7 +2,7 @@ from fastapi import FastAPI, Query, Path, HTTPException
 from typing import Annotated
 from models import CreateBook
 from uuid import UUID, uuid4
-from local_functions import read_book, delete_book, save_book, delete_book_new
+from local_functions import read_book, save_book, delete_book_new
 
 app = FastAPI(
     version='1.0.0',
@@ -20,7 +20,7 @@ async def say_hello():
 async def create_book(book: Annotated[CreateBook, Query()]):
     book.id = str(uuid4())
     save_book(book.model_dump(mode='json'))
-    return read_book()
+    return await read_book()
 
 
 @app.get('/list_books', tags=['Library'])
@@ -29,7 +29,7 @@ async def list_books() -> list:
 
 @app.get('/view-book/{book_id}/', response_model=CreateBook, tags=['Library'])
 async def view_book(book_id: UUID) -> dict:
-    list_books = read_book()
+    list_books = await read_book()
     for book in list_books: 
         if book['id'] == str(book_id):
             return book
