@@ -2,7 +2,7 @@ from fastapi import FastAPI, Query, Path, HTTPException
 from typing import Annotated
 from models import CreateBook
 from uuid import UUID, uuid4
-from local_functions import read_book, save_book, delete_book_new
+from local_functions import read_book, save_book, delete_book_new, edit_book
 
 app = FastAPI(
     version='1.0.0',
@@ -37,12 +37,34 @@ async def view_book(book_id: UUID) -> dict:
     
 @app.put('/update-book/{book_id}/', tags=['Library'])
 async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[CreateBook, Query()]):
-    for b in books:
+    book_id_str = str(book_id)
+    list_books = read_book()
+    
+    book_exists = any(str(book.get('id')) == book_id_str for book in list_books)
+    
+    if book_exists:
+        for book in list_books:
+            book.update({
+                'title': book_update.title,
+                'author': book_update.author,
+                'category': book_update.category,
+            })
+            book.get('title') = book_update.title
+            book.get('author') = book_update.author
+            book.get('category') = book_update.category
+            book.get('year') = book_update.year
+            book.get('reading') = book_update.reading
+            book.get('score') = book_update.score
+        u_book = edit_book(book.json())
+    
+    return {'messages':f'Book with ID {u_book} update successfully'}
+        
+    """for b in books:
         if b.id == book_id:
             b.title = book_update.title
             b.author = book_update.author
             b.year = book_update.year
-    return b 
+    return b """
 
 @app.delete('/delete-book/{book_id}/', tags=['Library'])
 async def delete_book(book_id: Annotated[UUID, Path(title='The ID of book')]):

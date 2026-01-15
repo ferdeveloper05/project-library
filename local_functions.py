@@ -21,24 +21,7 @@ def read_book() -> list:
     with open(json_file, 'r', encoding='utf-8') as f:
         datos = json.load(f)
         if isinstance(datos, list):
-            return datos
-    
-def delete_book(book: str):
-    with open(json_file, 'r', encoding='utf-8') as f:
-        archivos = json.load(f)
-        
-    if not isinstance(archivos, list):
-        raise ValueError('El archivo debe contener una lista')
-        
-    if not any(str(item.get('id')) == book for item in archivos):
-        print(f'ID {book} no encontrado')
-        return None
-        
-    datos_filtrados = [item for item in archivos if str(item.get('id')) != book]
-    
-    with open(json_file, 'w', encoding='utf-8') as f: 
-        json.dump(datos_filtrados, f, indent=4)
-    return book    
+            return datos 
 
 
 async def delete_book_new(book: str):
@@ -61,3 +44,27 @@ async def delete_book_new(book: str):
     async with aiofiles.open(json_file, 'w', encoding='utf-8') as f:
         await f.write(json.dumps(datos_filtrados, indent=4))
     return book
+
+
+async def edit_book(book: str, u_book):
+    if not os.path.exists(json_file):
+        return None
+    
+    async with aiofiles.open(json_file, 'r', encoding='utf-8') as file:
+        content = await file.read()
+        files = json.loads(content) if content.strip() else []
+        
+    if not isinstance(files, list):
+        raise ValueError('El archivo debe contener una lista')
+    
+    if not any(str(item.get('id')) == book for item in files):
+        print(f'ID {book} no encontrado')
+        return None
+    
+    files.append(u_book)
+    
+    async with aiofiles.open(json_file, 'w', encoding='utf-8') as file:
+        await file.write(json.dumps(files, indent=4))
+    return book
+    
+    
