@@ -20,5 +20,27 @@
         "year": 2010,
         "reading": true,
         "score": 5
+    },
+    {
+        "id": "a7a57279-abd4-4cef-99f8-b5d037f63c94",
+        "title": "Percy Jackson y el ladron del rayo",
+        "author": "Rick Riordian",
+        "category": [
+            "aventura"
+        ],
+        "year": 2008,
+        "reading": true,
+        "score": 5
+    },
+    {
+        "id": "efb0cf1c-1d88-4627-a66b-d8574942ad3f",
+        "title": "Percy Jackson y el ladron del rayo",
+        "author": "Rick Riordian",
+        "category": [
+            "aventura"
+        ],
+        "year": 2008,
+        "reading": true,
+        "score": 5
     }
 ]

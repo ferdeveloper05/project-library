@@ -20,7 +20,7 @@ async def say_hello():
 async def create_book(book: Annotated[CreateBook, Query()]):
     book.id = str(uuid4())
     save_book(book.model_dump(mode='json'))
-    return await read_book()
+    return read_book()
 
 
 @app.get('/list_books', tags=['Library'])
@@ -48,14 +48,12 @@ async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[C
                 'title': book_update.title,
                 'author': book_update.author,
                 'category': book_update.category,
+                'year':book_update.year,
+                'reading':book_update.reading,
+                'score':book_update.score
             })
-            book.get('title') = book_update.title
-            book.get('author') = book_update.author
-            book.get('category') = book_update.category
-            book.get('year') = book_update.year
-            book.get('reading') = book_update.reading
-            book.get('score') = book_update.score
-        u_book = edit_book(book.json())
+            
+        u_book = edit_book(book_id_str, book)
     
     return {'messages':f'Book with ID {u_book} update successfully'}
         

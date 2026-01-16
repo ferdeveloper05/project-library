@@ -31,3 +31,11 @@ class CreateBook(BaseModel):
             'score': 5
         }
     }
+    
+class UpdateBook(BaseModel):
+    title: str = Field(title='The title of book', min_length=5)
+    author: str = Field(title='Enter the author', min_length=5, max_length=15)
+    category: List[CategoryBook]
+    year: int = Field(gt=1700, lt=2026)
+    reading: bool = False
+    score: int = Field(ge=1, le=5)

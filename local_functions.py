@@ -64,7 +64,7 @@ async def edit_book(book: str, u_book):
     files.append(u_book)
     
     async with aiofiles.open(json_file, 'w', encoding='utf-8') as file:
-        await file.write(json.dumps(files, indent=4))
+        await file.write(json.dump(files, json_file, indent=4))
     return book
     
     
