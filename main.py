@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Query, Path, HTTPException
 from typing import Annotated
-from models import CreateBook
+from models import CreateBook, UpdateBook
 from uuid import UUID, uuid4
 from local_functions import read_book, save_book, delete_book_new, edit_book
 
@@ -36,7 +36,7 @@ async def view_book(book_id: UUID) -> dict:
 
     
 @app.put('/update-book/{book_id}/', tags=['Library'])
-async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[CreateBook, Query()]):
+async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[UpdateBook, Query()]):
     book_id_str = str(book_id)
     list_books = read_book()
     
@@ -53,7 +53,7 @@ async def update_book(book_id: Annotated[UUID, Path()], book_update: Annotated[C
                 'score':book_update.score
             })
             
-        u_book = edit_book(book_id_str, book)
+        u_book = await edit_book(book_id_str, book)
     
     return {'messages':f'Book with ID {u_book} update successfully'}
         

@@ -33,14 +33,14 @@
         "score": 5
     },
     {
-        "id": "efb0cf1c-1d88-4627-a66b-d8574942ad3f",
-        "title": "Percy Jackson y el ladron del rayo",
+        "id": "511b1118-31b4-4893-9ee5-61e9797b2924",
+        "title": "Amanecer en la cosecha",
         "author": "Rick Riordian",
         "category": [
-            "aventura"
+            "distopia"
         ],
-        "year": 2008,
-        "reading": true,
-        "score": 5
+        "year": 2025,
+        "reading": false,
+        "score": 1
     }
 ]

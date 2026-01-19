@@ -61,10 +61,17 @@ async def edit_book(book: str, u_book):
         print(f'ID {book} no encontrado')
         return None
     
-    files.append(u_book)
+    encontrado = False
+    for i, item in enumerate(files):
+        if str(item.get('id')) == book:
+            files[i] = u_book  # ← REEMPLAZA el registro
+            encontrado = True
+            break
+    
+    
     
     async with aiofiles.open(json_file, 'w', encoding='utf-8') as file:
-        await file.write(json.dump(files, json_file, indent=4))
+        await file.write(json.dumps(files, indent=4))
     return book
     
     
