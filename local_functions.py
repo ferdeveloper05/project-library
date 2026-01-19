@@ -1,21 +1,21 @@
 import json
-import aiofiles # Instalar esta libreria 
+import aiofiles
 import os
 
 json_file = 'list_books.json'
 
-def save_book(book):
-    
-    with open(json_file, 'r', encoding='utf-8') as f: 
-        datos = json.load(f)
-        
-        if isinstance(datos, list): 
-            datos.append(book)
-        else:
-            datos = [datos] + book
-    
-    with open(json_file, 'w', encoding='utf-8') as file: 
-        json.dump(datos, file, indent=4, ensure_ascii=False)
+async def save_book(book):
+    try:
+        async with aiofiles.open(json_file, 'r') as f:
+            content = await f.read()
+            datos = json.loads(content) if content.strip() else []
+    except (FileNotFoundError, json.JSONDecodeError, ValueError):
+        datos = []
+    if isinstance(datos, list): datos.append(book)
+    else: datos = [datos, book]
+    async with aiofiles.open(json_file, 'w') as f:
+        await f.write(json.dumps(datos, default=str, indent=4, ensure_ascii=False))
+
 
 def read_book() -> list:
     with open(json_file, 'r', encoding='utf-8') as f:
@@ -57,10 +57,6 @@ async def edit_book(book: str, u_book):
     if not isinstance(files, list):
         raise ValueError('El archivo debe contener una lista')
     
-    if not any(str(item.get('id')) == book for item in files):
-        print(f'ID {book} no encontrado')
-        return None
-    
     encontrado = False
     for i, item in enumerate(files):
         if str(item.get('id')) == book:
@@ -68,10 +64,13 @@ async def edit_book(book: str, u_book):
             encontrado = True
             break
     
-    
+    if not encontrado:
+        print(f'ID {book} no encontrado')
+        return None
     
     async with aiofiles.open(json_file, 'w', encoding='utf-8') as file:
         await file.write(json.dumps(files, indent=4))
+        
     return book
     
     
