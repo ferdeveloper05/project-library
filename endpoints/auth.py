@@ -1,15 +1,15 @@
-from fastapi import APIRouter, HTTPException, Depends, Query, Path, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from typing import Annotated
 
 import jwt
-from typing import Annotated
-from models.auth_model import User, Token, TokenData
-from uuid import UUID, uuid4
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+
+from models.auth_model import Token, User
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/auth/token')
 
 router = APIRouter(
-    prefix='/auth',
+    prefix='/example/auth',
     tags=['Authentication']
 )
 

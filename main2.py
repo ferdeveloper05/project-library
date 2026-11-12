@@ -1,8 +1,9 @@
 from fastapi import FastAPI
-from endpoints import auth
+
+from endpoints import authentication
 
 app = FastAPI()
-app.include_router(auth.router, prefix='/api/v1')
+app.include_router(authentication.router)
 
 @app.get("/", tags=['Home'])
 async def say_hello():
